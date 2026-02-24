@@ -13,11 +13,16 @@
     <main class="container">
       <header class="app-header">
         ポモドーロタイマー
-        <button id="settingsToggle" class="settings-icon" aria-label="設定を開く">⚙️</button>
+        <div class="window-controls">
+          <button class="window-btn minimize" aria-label="最小化">−</button>
+          <button class="window-btn maximize" aria-label="最大化">□</button>
+          <button class="window-btn close" aria-label="閉じる">×</button>
+        </div>
+        <button id="settingsToggle" class="settings-icon" aria-label="設定を開く" style="display: none;">⚙️</button>
       </header>
 
-      <!-- 設定パネル -->
-      <section id="settingsPanel" class="card settings-panel" style="display: none;">
+      <!-- 設定パネル (Phase 2以降で使用) -->
+      <section id="settingsPanel" class="card settings-panel" style="display: none;" data-phase="2">
         <h3 class="settings-title">設定</h3>
         
         <div class="setting-group">
@@ -95,6 +100,7 @@
       </section>
 
       <section class="card stats-card">
+        <h3 class="stats-title">今日の進捗</h3>
         <div class="stats-row">
           <div class="stat">
             <div class="stat-num" id="completedCount">4</div>
@@ -107,8 +113,8 @@
         </div>
       </section>
 
-      <!-- ゲーミフィケーションセクション -->
-      <section class="card gamification-card">
+      <!-- ゲーミフィケーションセクション (Phase 2以降で使用) -->
+      <section class="card gamification-card" style="display: none;" data-phase="2">
         <h2 class="section-title">レベルとXP</h2>
         <div class="level-info">
           <div class="level-display">
@@ -126,14 +132,14 @@
         </div>
       </section>
 
-      <section class="card achievements-card">
+      <section class="card achievements-card" style="display: none;" data-phase="2">
         <h2 class="section-title">バッジ</h2>
         <div class="achievements-grid" id="achievementsGrid">
           <div class="achievement-placeholder">バッジを獲得しよう！</div>
         </div>
       </section>
 
-      <section class="card stats-chart-card">
+      <section class="card stats-chart-card" style="display: none;" data-phase="2">
         <h2 class="section-title">週間統計</h2>
         <div class="chart-container">
           <canvas id="weeklyChart" width="400" height="200"></canvas>
@@ -161,6 +167,7 @@
     </div>
 
     <script src="/static/js/timer_logic.js"></script>
+    <script src="/static/js/settings.js"></script>
     <script src="/static/js/timer_ui.js"></script>
     <script src="/static/js/gamification.js"></script>
   </body>
