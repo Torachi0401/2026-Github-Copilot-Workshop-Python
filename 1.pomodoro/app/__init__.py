@@ -14,9 +14,16 @@ def create_app(test_config=None):
         app.config.update(test_config)
 
     # ルート登録
-    from .routes import bp
-
-    app.register_blueprint(bp)
+    from .routes import bp as main_bp
+    app.register_blueprint(main_bp)
+    
+    # 認証ルート登録
+    from .auth_routes import bp as auth_bp
+    app.register_blueprint(auth_bp, url_prefix='/auth')
+    
+    # 認証機能初期化
+    from .auth import init_auth
+    init_auth(app)
 
     # 簡易ストレージ（現時点ではメモリ）
     # 形式: list of {id, start_time_iso, end_time_iso, duration_sec, status, type}

@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>ログイン - ポモドーロタイマー</title>
+    <link rel="stylesheet" href="/static/css/styles.css" />
+    <style>
+      .auth-container {
+        max-width: 400px;
+        margin: 100px auto;
+        padding: 40px;
+      }
+      .auth-card {
+        background: var(--card);
+        border-radius: 12px;
+        padding: 32px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      }
+      .auth-title {
+        font-size: 24px;
+        font-weight: 700;
+        margin-bottom: 24px;
+        text-align: center;
+      }
+      .form-group {
+        margin-bottom: 20px;
+      }
+      .form-label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 8px;
+        color: var(--text);
+      }
+      .form-input {
+        width: 100%;
+        padding: 12px;
+        border: 2px solid var(--muted);
+        border-radius: 8px;
+        font-size: 14px;
+        transition: border-color 0.2s;
+      }
+      .form-input:focus {
+        outline: none;
+        border-color: var(--accent);
+      }
+      .btn-submit {
+        width: 100%;
+        padding: 12px;
+        background: var(--accent);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.2s;
+      }
+      .btn-submit:hover {
+        background: var(--accent-dark);
+      }
+      .auth-link {
+        text-align: center;
+        margin-top: 20px;
+        color: var(--muted);
+      }
+      .auth-link a {
+        color: var(--accent);
+        text-decoration: none;
+        font-weight: 600;
+      }
+      .auth-link a:hover {
+        text-decoration: underline;
+      }
+      .demo-info {
+        background: #e3f2fd;
+        border: 1px solid #2196f3;
+        border-radius: 8px;
+        padding: 12px;
+        margin-bottom: 20px;
+        font-size: 13px;
+        color: #1976d2;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="auth-container">
+      <div class="auth-card">
+        <h1 class="auth-title">ログイン</h1>
+        
+        <div class="demo-info">
+          <strong>デモアカウント:</strong><br>
+          ユーザー名: demo / パスワード: demo123
+        </div>
+        
+        <form method="POST" action="/auth/login">
+          <div class="form-group">
+            <label class="form-label" for="username">ユーザー名</label>
+            <input 
+              type="text" 
+              class="form-input" 
+              id="username" 
+              name="username" 
+              required 
+              autofocus
+            />
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label" for="password">パスワード</label>
+            <input 
+              type="password" 
+              class="form-input" 
+              id="password" 
+              name="password" 
+              required
+            />
+          </div>
+          
+          <button type="submit" class="btn-submit">ログイン</button>
+        </form>
+        
+        <div class="auth-link">
+          アカウントをお持ちでない方は
+          <a href="/auth/register">新規登録</a>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
