@@ -13,6 +13,9 @@ class GamificationUI {
     this.levelUpLevel = document.getElementById('levelUpLevel');
     this.weeklyChart = document.getElementById('weeklyChart');
     
+    // 定数
+    this.dayNames = ['日', '月', '火', '水', '木', '金', '土'];
+    
     this.init();
   }
   
@@ -144,8 +147,7 @@ class GamificationUI {
       
       // 日付ラベル（曜日のみ）
       const date = new Date(dates[index]);
-      const dayNames = ['日', '月', '火', '水', '木', '金', '土'];
-      const dayLabel = dayNames[date.getDay()];
+      const dayLabel = this.dayNames[date.getDay()];
       
       ctx.fillStyle = '#666';
       ctx.font = '12px sans-serif';
