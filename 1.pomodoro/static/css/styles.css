@@ -106,3 +106,213 @@ html,body{
 }
 
 @media (max-width:420px){.container{margin:20px;padding:12px}.circle-wrap{width:200px;height:200px}.time-label{font-size:30px}}
+
+/* ゲーミフィケーション要素 */
+.gamification-card, .achievements-card, .stats-chart-card {
+  margin-top: 18px;
+}
+
+.section-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #333;
+  margin: 0 0 12px 0;
+}
+
+/* レベルとXP */
+.level-info {
+  margin-bottom: 16px;
+}
+
+.level-display {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.level-label {
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.level-num {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.xp-bar-container {
+  width: 100%;
+  height: 12px;
+  background: #e0e0e0;
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 4px;
+}
+
+.xp-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent) 0%, var(--accent-dark) 100%);
+  transition: width 0.5s ease;
+  border-radius: 6px;
+}
+
+.xp-text {
+  font-size: 12px;
+  color: var(--muted);
+  text-align: right;
+}
+
+/* ストリーク */
+.streak-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  background: #fff3e0;
+  border-radius: 8px;
+}
+
+.streak-icon {
+  font-size: 24px;
+}
+
+.streak-text {
+  font-size: 16px;
+  font-weight: 600;
+  color: #ff6f00;
+}
+
+/* バッジ */
+.achievements-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: 12px;
+}
+
+.achievement-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 12px;
+  background: #f5f5f5;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.achievement-badge:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.badge-icon {
+  font-size: 32px;
+  margin-bottom: 4px;
+}
+
+.badge-name {
+  font-size: 11px;
+  text-align: center;
+  color: #555;
+  line-height: 1.2;
+}
+
+.achievement-placeholder {
+  grid-column: 1 / -1;
+  text-align: center;
+  color: var(--muted);
+  padding: 20px;
+  font-size: 14px;
+}
+
+/* 週間統計 */
+.chart-container {
+  margin-bottom: 12px;
+  padding: 12px;
+  background: #fafafa;
+  border-radius: 8px;
+}
+
+.chart-container canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.weekly-stats {
+  display: flex;
+  justify-content: space-around;
+  gap: 12px;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.stat-item-label {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.stat-item-value {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+/* レベルアップ通知 */
+.level-up-notification {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+  padding: 32px;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+  z-index: 1000;
+  opacity: 0;
+  transition: all 0.3s ease;
+}
+
+.level-up-notification.show {
+  transform: translate(-50%, -50%) scale(1);
+  opacity: 1;
+}
+
+.level-up-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.level-up-icon {
+  font-size: 48px;
+  animation: bounce 0.5s ease infinite;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.level-up-text {
+  font-size: 24px;
+  font-weight: 700;
+  color: white;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+.level-up-level {
+  font-size: 32px;
+  font-weight: 700;
+  color: white;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
