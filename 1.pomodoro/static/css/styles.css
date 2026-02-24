@@ -53,7 +53,8 @@ html,body{
 .window-btn:hover{opacity:0.8;}
 .window-btn.close:hover{color:#ff5555;}
 
-.settings-icon{background:none;border:none;cursor:pointer;font-size:24px;padding:4px;opacity:0.7;transition:opacity 0.2s;position:absolute;right:0;top:0;}
+/* 設定アイコン (Phase 2以降で使用) */
+.settings-icon{background:none;border:none;cursor:pointer;font-size:24px;padding:4px;opacity:0.7;transition:opacity 0.2s;}
 .settings-icon:hover{opacity:1;}
 
 /* 設定パネル */
