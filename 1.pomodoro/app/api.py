@@ -1,5 +1,7 @@
-from flask import Blueprint, current_app, request, jsonify
+from flask import Blueprint, current_app, request, jsonify, make_response
 from datetime import datetime, timezone, date
+import csv
+from io import StringIO
 from .gamification import (
     calculate_level_and_xp, check_achievements, calculate_streak,
     get_weekly_stats, get_monthly_stats, XP_PER_POMODORO
@@ -154,4 +156,77 @@ def monthly_stats():
     stats = get_monthly_stats(store)
     
     return jsonify(stats), 200
+
+
+@bp.route('/export/csv', methods=['GET'])
+def export_csv():
+    """ポモドーロデータをCSV形式でエクスポート"""
+    store = current_app.config['POMODORO_STORE']
+    
+    # CSVデータを作成
+    output = StringIO()
+    writer = csv.DictWriter(output, fieldnames=['id', 'start_time', 'end_time', 'duration_sec', 'status', 'type'])
+    writer.writeheader()
+    
+    for record in store:
+        writer.writerow(record)
+    
+    # レスポンスを作成
+    response = make_response(output.getvalue())
+    response.headers['Content-Type'] = 'text/csv'
+    response.headers['Content-Disposition'] = f'attachment; filename=pomodoro_data_{datetime.now().strftime("%Y%m%d_%H%M%S")}.csv'
+    
+    return response
+
+
+@bp.route('/import/csv', methods=['POST'])
+def import_csv():
+    """CSV形式のポモドーロデータをインポート"""
+    if 'file' not in request.files:
+        return jsonify({'error': 'ファイルが指定されていません'}), 400
+    
+    file = request.files['file']
+    if file.filename == '':
+        return jsonify({'error': 'ファイル名が空です'}), 400
+    
+    if not file.filename.endswith('.csv'):
+        return jsonify({'error': 'CSVファイルを指定してください'}), 400
+    
+    try:
+        # CSVファイルを読み込む
+        stream = StringIO(file.stream.read().decode('utf-8'))
+        reader = csv.DictReader(stream)
+        
+        store = current_app.config['POMODORO_STORE']
+        imported_count = 0
+        
+        for row in reader:
+            # 既存のIDと重複しないようにチェック
+            existing_ids = {r['id'] for r in store}
+            record_id = int(row['id'])
+            
+            if record_id not in existing_ids:
+                record = {
+                    'id': record_id,
+                    'start_time': row['start_time'],
+                    'end_time': row['end_time'] if row['end_time'] else None,
+                    'duration_sec': int(row['duration_sec']) if row['duration_sec'] else None,
+                    'status': row['status'],
+                    'type': row['type']
+                }
+                store.append(record)
+                imported_count += 1
+                
+                # NEXT_IDを更新
+                if record_id >= current_app.config['POMODORO_NEXT_ID']:
+                    current_app.config['POMODORO_NEXT_ID'] = record_id + 1
+        
+        return jsonify({
+            'ok': True,
+            'imported_count': imported_count,
+            'message': f'{imported_count}件のレコードをインポートしました'
+        }), 200
+        
+    except Exception as e:
+        return jsonify({'error': f'インポート中にエラーが発生しました: {str(e)}'}), 500
 

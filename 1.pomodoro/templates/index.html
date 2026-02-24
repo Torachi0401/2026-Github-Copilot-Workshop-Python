@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>ポモドーロタイマー</title>
     <link rel="stylesheet" href="/static/css/styles.css" />
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js" integrity="sha384-/KNQL8Nu5gCHLqwqfQjA689Hhoqgi2S84SNUxC3roTe4EhJ9AfLkp8QiQcU8AMzI" crossorigin="anonymous"></script>
   </head>
   <body>
     <!-- Particle effect container -->
@@ -12,8 +13,14 @@
     
     <main class="container">
       <header class="app-header">
-        ポモドーロタイマー
-        <button id="settingsToggle" class="settings-icon" aria-label="設定を開く">⚙️</button>
+        <div>
+          <span>ポモドーロタイマー</span>
+          <span id="currentUser" style="font-size: 12px; color: var(--muted); margin-left: 12px;"></span>
+        </div>
+        <div style="display: flex; gap: 8px; align-items: center;">
+          <button id="logoutBtn" class="settings-icon" style="display: none;" aria-label="ログアウト">🚪</button>
+          <button id="settingsToggle" class="settings-icon" aria-label="設定を開く">⚙️</button>
+        </div>
       </header>
 
       <!-- 設定パネル -->
@@ -64,6 +71,30 @@
               <span>Tick音</span>
             </label>
           </div>
+        </div>
+
+        <div class="setting-group">
+          <label class="setting-label">データ管理</label>
+          <div class="data-management-buttons">
+            <button id="exportCsv" class="btn secondary">CSVエクスポート</button>
+            <label for="importCsv" class="btn secondary import-label">
+              CSVインポート
+              <input type="file" id="importCsv" accept=".csv" style="display: none;">
+            </label>
+          </div>
+        </div>
+
+        <div class="setting-group">
+          <label class="setting-label">リアルタイム同期</label>
+          <div class="sound-toggles">
+            <label class="sound-toggle">
+              <input type="checkbox" id="enableWebSocketSync">
+              <span>複数デバイス間で同期</span>
+            </label>
+          </div>
+          <small style="color: var(--muted); display: block; margin-top: 8px;">
+            有効にすると、複数のタブやデバイス間でタイマーの状態が自動的に同期されます。
+          </small>
         </div>
 
         <button id="closeSettings" class="btn primary close-settings-btn">閉じる</button>
@@ -164,5 +195,8 @@
     <script src="/static/js/settings.js"></script>
     <script src="/static/js/timer_ui.js"></script>
     <script src="/static/js/gamification.js"></script>
+    <script src="/static/js/csv_manager.js"></script>
+    <script src="/static/js/websocket_client.js"></script>
+    <script src="/static/js/auth_ui.js"></script>
   </body>
 </html>

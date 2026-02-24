@@ -316,3 +316,64 @@ html,body{
   text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
 }
 
+/* データ管理ボタン */
+.data-management-buttons {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.data-management-buttons .btn {
+  flex: 1;
+  min-width: 120px;
+}
+
+.import-label {
+  display: inline-block;
+  cursor: pointer;
+  text-align: center;
+}
+
+/* 通知システム */
+.notification-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 10000;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 320px;
+}
+
+.notification {
+  padding: 12px 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  font-size: 14px;
+  opacity: 0;
+  transform: translateX(400px);
+  transition: all 0.3s ease;
+}
+
+.notification.show {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.notification-success {
+  background: #10b981;
+  color: white;
+}
+
+.notification-error {
+  background: #ef4444;
+  color: white;
+}
+
+.notification-info {
+  background: #3b82f6;
+  color: white;
+}
+
+
