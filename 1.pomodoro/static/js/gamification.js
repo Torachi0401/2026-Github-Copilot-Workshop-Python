@@ -34,7 +34,7 @@ class GamificationUI {
   
   async loadGamificationStats() {
     try {
-      const response = await fetch('/api/gamification/stats');
+      const response = await window.syncQueue.fetch('/api/gamification/stats');
       if (!response.ok) return;
       
       const data = await response.json();
@@ -60,7 +60,7 @@ class GamificationUI {
   
   async loadAchievements() {
     try {
-      const response = await fetch('/api/gamification/achievements');
+      const response = await window.syncQueue.fetch('/api/gamification/achievements');
       if (!response.ok) return;
       
       const data = await response.json();
@@ -86,7 +86,7 @@ class GamificationUI {
   
   async loadWeeklyStats() {
     try {
-      const response = await fetch('/api/gamification/weekly-stats');
+      const response = await window.syncQueue.fetch('/api/gamification/weekly-stats');
       if (!response.ok) return;
       
       const data = await response.json();

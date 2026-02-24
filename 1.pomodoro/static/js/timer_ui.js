@@ -53,14 +53,14 @@ document.addEventListener('DOMContentLoaded', () => {
   // ポモドーロ開始時のAPI呼び出し
   async function startPomodoro() {
     try {
-      const response = await fetch('/api/start', {
+      const response = await window.syncQueue.fetch('/api/start', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ type: 'work' })
       })
       if (response.ok) {
         const data = await response.json()
-        currentPomodoroId = data.id
+        currentPomodoroId = data.id || data.queued
       }
     } catch (error) {
       console.error('Failed to start pomodoro:', error)
@@ -72,7 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!currentPomodoroId) return
 
     try {
-      const response = await fetch('/api/complete', {
+      const response = await window.syncQueue.fetch('/api/complete', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id: currentPomodoroId })
