@@ -22,6 +22,12 @@ def create_app(test_config=None):
     # 形式: list of {id, start_time_iso, end_time_iso, duration_sec, status, type}
     app.config.setdefault('POMODORO_STORE', [])
     app.config.setdefault('POMODORO_NEXT_ID', 1)
+    
+    # ゲーミフィケーションストレージ
+    app.config.setdefault('GAMIFICATION_DATA', {
+        'total_xp': 0,
+        'unlocked_badges': []  # list of badge IDs
+    })
 
     from .api import bp as api_bp
     app.register_blueprint(api_bp, url_prefix='/api')

@@ -1,4 +1,4 @@
-// 最低限のUI連携（タイマー本体ロジックは後で分離）
+// 最低限のUI連携（タイマー本体ロジックは別モジュール）
 document.addEventListener('DOMContentLoaded', () => {
   const startBtn = document.getElementById('startBtn')
   const resetBtn = document.getElementById('resetBtn')
@@ -6,8 +6,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const ring = document.querySelector('.ring')
 
   const FULL_SECONDS = 25 * 60
-  let remaining = FULL_SECONDS
-  let timerId = null
+
+  // TimerLogic is provided by timer_logic.js (exposed as window.TimerLogic in browser)
+  const TimerCtor = window.TimerLogic
+  const timer = new TimerCtor(FULL_SECONDS, { now: () => Date.now() })
+
+  let currentPomodoroId = null
 
   function formatTime(sec){
     const m = String(Math.floor(sec/60)).padStart(2,'0')
@@ -15,58 +19,96 @@ document.addEventListener('DOMContentLoaded', () => {
     return `${m}:${s}`
   }
 
-  // 最低限のUI連携（タイマー本体ロジックは別モジュール）
-  document.addEventListener('DOMContentLoaded', () => {
-    const startBtn = document.getElementById('startBtn')
-    const resetBtn = document.getElementById('resetBtn')
-    const timeLabel = document.querySelector('.time-label')
-    const ring = document.querySelector('.ring')
-
-    const FULL_SECONDS = 25 * 60
-
-    // TimerLogic is provided by timer_logic.js (exposed as window.TimerLogic in browser)
-    const TimerCtor = window.TimerLogic
-    const timer = new TimerCtor(FULL_SECONDS, { now: () => Date.now() })
-
-    function formatTime(sec){
-      const m = String(Math.floor(sec/60)).padStart(2,'0')
-      const s = String(sec%60).padStart(2,'0')
-      return `${m}:${s}`
-    }
-
-    function updateUI(){
-      const remSec = Math.max(0, timer.remainingSecRounded())
-      timeLabel.textContent = formatTime(remSec)
-      const circumference = 2 * Math.PI * 52
-      const progress = 1 - (remSec / FULL_SECONDS)
-      const offset = circumference * (1 - progress)
-      ring.style.strokeDashoffset = offset
-    }
-
-    // periodic UI update
-    setInterval(updateUI, 250)
-
-    startBtn.addEventListener('click', ()=>{
-      if(timer.isRunning()){
-        timer.pause()
-        startBtn.textContent = '開始'
-      } else {
-        if(timer.remainingSecRounded() <= 0) timer.reset()
-        timer.start()
-        startBtn.textContent = '一時停止'
-      }
-      updateUI()
-    })
-
-    resetBtn.addEventListener('click', ()=>{
-      timer.reset()
-      startBtn.textContent = '開始'
-      updateUI()
-    })
-
-    // 初期設定
+  function updateUI(){
+    const remSec = Math.max(0, timer.remainingSecRounded())
+    timeLabel.textContent = formatTime(remSec)
     const circumference = 2 * Math.PI * 52
-    ring.style.strokeDasharray = `${circumference}`
-    ring.style.strokeDashoffset = `${circumference}`
+    const progress = 1 - (remSec / FULL_SECONDS)
+    const offset = circumference * (1 - progress)
+    ring.style.strokeDashoffset = offset
+
+    // タイマー完了チェック
+    if (remSec === 0 && timer.isRunning()) {
+      handlePomodoroComplete()
+      timer.pause()
+      startBtn.textContent = '開始'
+    }
+  }
+
+  // ポモドーロ開始時のAPI呼び出し
+  async function startPomodoro() {
+    try {
+      const response = await fetch('/api/start', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ type: 'work' })
+      })
+      if (response.ok) {
+        const data = await response.json()
+        currentPomodoroId = data.id
+      }
+    } catch (error) {
+      console.error('Failed to start pomodoro:', error)
+    }
+  }
+
+  // ポモドーロ完了時のAPI呼び出し
+  async function handlePomodoroComplete() {
+    if (!currentPomodoroId) return
+
+    try {
+      const response = await fetch('/api/complete', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: currentPomodoroId })
+      })
+      if (response.ok) {
+        const data = await response.json()
+        
+        // ゲーミフィケーションUIに通知
+        if (window.gamificationUI) {
+          window.gamificationUI.onPomodoroComplete(data)
+        }
+        
+        currentPomodoroId = null
+      }
+    } catch (error) {
+      console.error('Failed to complete pomodoro:', error)
+    }
+  }
+
+  // periodic UI update
+  setInterval(updateUI, 250)
+
+  startBtn.addEventListener('click', ()=>{
+    if(timer.isRunning()){
+      timer.pause()
+      startBtn.textContent = '開始'
+    } else {
+      if(timer.remainingSecRounded() <= 0) {
+        timer.reset()
+      }
+      timer.start()
+      startBtn.textContent = '一時停止'
+      
+      // ポモドーロ開始時にAPI呼び出し
+      if (!currentPomodoroId) {
+        startPomodoro()
+      }
+    }
     updateUI()
   })
+
+  resetBtn.addEventListener('click', ()=>{
+    timer.reset()
+    startBtn.textContent = '開始'
+    currentPomodoroId = null
+    updateUI()
+  })
+
+  // 初期設定
+  const circumference = 2 * Math.PI * 52
+  ring.style.strokeDasharray = `${circumference}`
+  ring.style.strokeDashoffset = `${circumference}`
+  updateUI()
+})
