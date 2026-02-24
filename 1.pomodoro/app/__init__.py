@@ -31,5 +31,16 @@ def create_app(test_config=None):
 
     from .api import bp as api_bp
     app.register_blueprint(api_bp, url_prefix='/api')
+    
+    # WebSocket初期化（ENABLE_WEBSOCKETがTrueの場合のみ）
+    if test_config and test_config.get('ENABLE_WEBSOCKET', False):
+        from .websocket import init_socketio
+        socketio = init_socketio(app)
+        app.socketio = socketio
+    elif not test_config:
+        # 通常実行時はデフォルトで有効
+        from .websocket import init_socketio
+        socketio = init_socketio(app)
+        app.socketio = socketio
 
     return app

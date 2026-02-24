@@ -1,2 +1,4 @@
 flask
 pytest
+flask-socketio
+python-socketio

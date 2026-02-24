@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>ポモドーロタイマー</title>
     <link rel="stylesheet" href="/static/css/styles.css" />
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js" integrity="sha384-/KNQL8Nu5gCHLqwqfQjA689Hhoqgi2S84SNUxC3roTe4EhJ9AfLkp8QiQcU8AMzI" crossorigin="anonymous"></script>
   </head>
   <body>
     <!-- Particle effect container -->
@@ -75,6 +76,19 @@
               <input type="file" id="importCsv" accept=".csv" style="display: none;">
             </label>
           </div>
+        </div>
+
+        <div class="setting-group">
+          <label class="setting-label">リアルタイム同期</label>
+          <div class="sound-toggles">
+            <label class="sound-toggle">
+              <input type="checkbox" id="enableWebSocketSync">
+              <span>複数デバイス間で同期</span>
+            </label>
+          </div>
+          <small style="color: var(--muted); display: block; margin-top: 8px;">
+            有効にすると、複数のタブやデバイス間でタイマーの状態が自動的に同期されます。
+          </small>
         </div>
 
         <button id="closeSettings" class="btn primary close-settings-btn">閉じる</button>
@@ -175,5 +189,6 @@
     <script src="/static/js/timer_ui.js"></script>
     <script src="/static/js/gamification.js"></script>
     <script src="/static/js/csv_manager.js"></script>
+    <script src="/static/js/websocket_client.js"></script>
   </body>
 </html>
