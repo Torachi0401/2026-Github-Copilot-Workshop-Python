@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>ポモドーロタイマー</title>
+    <link rel="stylesheet" href="/static/css/styles.css" />
+  </head>
+  <body>
+    <main class="container">
+      <header class="app-header">ポモドーロタイマー</header>
+
+      <section class="card timer-card">
+        <div class="status">作業中</div>
+
+        <div class="circle-wrap">
+          <svg class="progress-ring" viewBox="0 0 120 120" width="240" height="240" aria-hidden="true">
+            <circle class="ring-bg" cx="60" cy="60" r="52"></circle>
+            <circle class="ring" cx="60" cy="60" r="52" stroke-dasharray="326.7" stroke-dashoffset="0"></circle>
+          </svg>
+
+          <div class="time-label">25:00</div>
+        </div>
+
+        <div class="controls">
+          <button id="startBtn" class="btn primary">開始</button>
+          <button id="resetBtn" class="btn outline">リセット</button>
+        </div>
+      </section>
+
+      <section class="card stats-card">
+        <div class="stats-row">
+          <div class="stat">
+            <div class="stat-num">4</div>
+            <div class="stat-label">完了</div>
+          </div>
+          <div class="stat right">
+            <div class="stat-num">1時間40分</div>
+            <div class="stat-label">集中時間</div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script src="/static/js/timer_logic.js"></script>
+    <script src="/static/js/timer_ui.js"></script>
+  </body>
+</html>
