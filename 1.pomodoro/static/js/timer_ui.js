@@ -1,9 +1,24 @@
 // 最低限のUI連携（タイマー本体ロジックは別モジュール）
 document.addEventListener('DOMContentLoaded', () => {
-  const startBtn = document.getElementById('startBtn')
-  const resetBtn = document.getElementById('resetBtn')
-  const timeLabel = document.querySelector('.time-label')
-  const ring = document.querySelector('.ring')
+  // 設定管理
+  const settings = new window.Settings();
+  
+  // UI要素の取得
+  const startBtn = document.getElementById('startBtn');
+  const resetBtn = document.getElementById('resetBtn');
+  const timeLabel = document.querySelector('.time-label');
+  const ring = document.querySelector('.ring');
+  const settingsToggle = document.getElementById('settingsToggle');
+  const settingsPanel = document.getElementById('settingsPanel');
+  const closeSettings = document.getElementById('closeSettings');
+  
+  // 設定UI要素
+  const workDurationButtons = document.querySelectorAll('[data-work-duration]');
+  const breakDurationButtons = document.querySelectorAll('[data-break-duration]');
+  const themeButtons = document.querySelectorAll('[data-theme]');
+  const soundStartCheckbox = document.getElementById('soundStart');
+  const soundEndCheckbox = document.getElementById('soundEnd');
+  const soundTickCheckbox = document.getElementById('soundTick');
 
   const FULL_SECONDS = 25 * 60
 
@@ -14,9 +29,9 @@ document.addEventListener('DOMContentLoaded', () => {
   let currentPomodoroId = null
 
   function formatTime(sec){
-    const m = String(Math.floor(sec/60)).padStart(2,'0')
-    const s = String(sec%60).padStart(2,'0')
-    return `${m}:${s}`
+    const m = String(Math.floor(sec/60)).padStart(2,'0');
+    const s = String(sec%60).padStart(2,'0');
+    return `${m}:${s}`;
   }
 
   function updateUI(){

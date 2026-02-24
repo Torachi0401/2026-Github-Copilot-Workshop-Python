@@ -7,13 +7,79 @@
     <link rel="stylesheet" href="/static/css/styles.css" />
   </head>
   <body>
+    <!-- Particle effect container -->
+    <div class="particle-container" id="particleContainer"></div>
+    
     <main class="container">
-      <header class="app-header">ポモドーロタイマー</header>
+      <header class="app-header">
+        ポモドーロタイマー
+        <button id="settingsToggle" class="settings-icon" aria-label="設定を開く">⚙️</button>
+      </header>
+
+      <!-- 設定パネル -->
+      <section id="settingsPanel" class="card settings-panel" style="display: none;">
+        <h3 class="settings-title">設定</h3>
+        
+        <div class="setting-group">
+          <label class="setting-label">作業時間</label>
+          <div class="option-buttons">
+            <button class="option-btn" data-work-duration="15">15分</button>
+            <button class="option-btn active" data-work-duration="25">25分</button>
+            <button class="option-btn" data-work-duration="35">35分</button>
+            <button class="option-btn" data-work-duration="45">45分</button>
+          </div>
+        </div>
+
+        <div class="setting-group">
+          <label class="setting-label">休憩時間</label>
+          <div class="option-buttons">
+            <button class="option-btn active" data-break-duration="5">5分</button>
+            <button class="option-btn" data-break-duration="10">10分</button>
+            <button class="option-btn" data-break-duration="15">15分</button>
+          </div>
+        </div>
+
+        <div class="setting-group">
+          <label class="setting-label">テーマ</label>
+          <div class="option-buttons">
+            <button class="option-btn active" data-theme="light">ライト</button>
+            <button class="option-btn" data-theme="dark">ダーク</button>
+            <button class="option-btn" data-theme="focus">フォーカス</button>
+          </div>
+        </div>
+
+        <div class="setting-group">
+          <label class="setting-label">サウンド</label>
+          <div class="sound-toggles">
+            <label class="sound-toggle">
+              <input type="checkbox" id="soundStart" checked>
+              <span>開始音</span>
+            </label>
+            <label class="sound-toggle">
+              <input type="checkbox" id="soundEnd" checked>
+              <span>終了音</span>
+            </label>
+            <label class="sound-toggle">
+              <input type="checkbox" id="soundTick">
+              <span>Tick音</span>
+            </label>
+          </div>
+        </div>
+
+        <button id="closeSettings" class="btn primary close-settings-btn">閉じる</button>
+      </section>
 
       <section class="card timer-card">
         <div class="status">作業中</div>
 
         <div class="circle-wrap">
+          <!-- Ripple effect container -->
+          <div class="ripple-container" id="rippleContainer">
+            <div class="ripple"></div>
+            <div class="ripple"></div>
+            <div class="ripple"></div>
+          </div>
+          
           <svg class="progress-ring" viewBox="0 0 120 120" width="240" height="240" aria-hidden="true">
             <circle class="ring-bg" cx="60" cy="60" r="52"></circle>
             <circle class="ring" cx="60" cy="60" r="52" stroke-dasharray="326.7" stroke-dashoffset="0"></circle>
