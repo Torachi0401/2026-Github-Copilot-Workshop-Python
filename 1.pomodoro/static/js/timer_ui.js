@@ -121,6 +121,108 @@ document.addEventListener('DOMContentLoaded', () => {
     updateUI()
   })
 
+  // 設定パネルの開閉
+  settingsToggle.addEventListener('click', () => {
+    settingsPanel.style.display = 'block'
+  })
+
+  closeSettings.addEventListener('click', () => {
+    settingsPanel.style.display = 'none'
+  })
+
+  // 作業時間の設定
+  workDurationButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const duration = parseInt(btn.dataset.workDuration)
+      settings.set('workDuration', duration)
+      
+      // アクティブ状態の更新
+      workDurationButtons.forEach(b => b.classList.remove('active'))
+      btn.classList.add('active')
+    })
+  })
+
+  // 休憩時間の設定
+  breakDurationButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const duration = parseInt(btn.dataset.breakDuration)
+      settings.set('breakDuration', duration)
+      
+      // アクティブ状態の更新
+      breakDurationButtons.forEach(b => b.classList.remove('active'))
+      btn.classList.add('active')
+    })
+  })
+
+  // テーマの設定
+  themeButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const theme = btn.dataset.theme
+      settings.set('theme', theme)
+      
+      // アクティブ状態の更新
+      themeButtons.forEach(b => b.classList.remove('active'))
+      btn.classList.add('active')
+      
+      // テーマの適用
+      document.body.className = `theme-${theme}`
+    })
+  })
+
+  // サウンド設定
+  soundStartCheckbox.addEventListener('change', (e) => {
+    settings.setSound('start', e.target.checked)
+  })
+
+  soundEndCheckbox.addEventListener('change', (e) => {
+    settings.setSound('end', e.target.checked)
+  })
+
+  soundTickCheckbox.addEventListener('change', (e) => {
+    settings.setSound('tick', e.target.checked)
+  })
+
+  // 保存された設定を読み込んでUIに反映
+  function loadSettings() {
+    const savedSettings = settings.getAll()
+    
+    // 作業時間の反映
+    workDurationButtons.forEach(btn => {
+      if (parseInt(btn.dataset.workDuration) === savedSettings.workDuration) {
+        btn.classList.add('active')
+      } else {
+        btn.classList.remove('active')
+      }
+    })
+    
+    // 休憩時間の反映
+    breakDurationButtons.forEach(btn => {
+      if (parseInt(btn.dataset.breakDuration) === savedSettings.breakDuration) {
+        btn.classList.add('active')
+      } else {
+        btn.classList.remove('active')
+      }
+    })
+    
+    // テーマの反映
+    themeButtons.forEach(btn => {
+      if (btn.dataset.theme === savedSettings.theme) {
+        btn.classList.add('active')
+      } else {
+        btn.classList.remove('active')
+      }
+    })
+    document.body.className = `theme-${savedSettings.theme}`
+    
+    // サウンド設定の反映
+    soundStartCheckbox.checked = savedSettings.sounds.start
+    soundEndCheckbox.checked = savedSettings.sounds.end
+    soundTickCheckbox.checked = savedSettings.sounds.tick
+  }
+
+  // 初期設定を読み込み
+  loadSettings()
+
   // 初期設定
   const circumference = 2 * Math.PI * 52
   ring.style.strokeDasharray = `${circumference}`
