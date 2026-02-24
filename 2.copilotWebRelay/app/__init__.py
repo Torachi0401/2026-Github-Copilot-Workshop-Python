@@ -11,7 +11,7 @@ def create_app():
                 template_folder=os.path.join(base_dir, 'templates'),
                 static_folder=os.path.join(base_dir, 'static'))
     
-    # ルートをインポート
+    # ルーティングをインポート
     from app import routes
     app.register_blueprint(routes.bp)
     
