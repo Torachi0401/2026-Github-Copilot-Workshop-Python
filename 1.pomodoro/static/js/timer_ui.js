@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const rippleContainer = document.getElementById('rippleContainer')
 
   const FULL_SECONDS = 25 * 60
+  const CIRCUMFERENCE = 2 * Math.PI * 52
   let particles = []
 
   // TimerLogic is provided by timer_logic.js (exposed as window.TimerLogic in browser)
@@ -88,9 +89,8 @@ document.addEventListener('DOMContentLoaded', () => {
   function updateUI(){
     const remSec = Math.max(0, timer.remainingSecRounded())
     timeLabel.textContent = formatTime(remSec)
-    const circumference = 2 * Math.PI * 52
     const progress = Math.max(0, remSec / FULL_SECONDS)
-    const offset = circumference * (1 - progress)
+    const offset = CIRCUMFERENCE * (1 - progress)
     ring.style.strokeDashoffset = offset
     
     // Update ring color based on progress
@@ -135,9 +135,8 @@ document.addEventListener('DOMContentLoaded', () => {
   })
 
   // 初期設定
-  const circumference = 2 * Math.PI * 52
-  ring.style.strokeDasharray = `${circumference}`
-  ring.style.strokeDashoffset = `${circumference}`
+  ring.style.strokeDasharray = `${CIRCUMFERENCE}`
+  ring.style.strokeDashoffset = `${CIRCUMFERENCE}`
   rippleContainer.style.display = 'none'
   updateUI()
 })
