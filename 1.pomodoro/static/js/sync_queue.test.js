@@ -29,7 +29,8 @@ class LocalStorageMock {
 global.localStorage = new LocalStorageMock();
 global.navigator = { onLine: true };
 global.window = {
-  addEventListener: jest.fn()
+  addEventListener: jest.fn(),
+  fetch: jest.fn()
 };
 global.fetch = jest.fn();
 
@@ -39,6 +40,7 @@ describe('SyncQueue', () => {
   beforeEach(() => {
     localStorage.clear();
     global.fetch.mockClear();
+    global.window.fetch.mockClear();
     global.window.addEventListener.mockClear();
     syncQueue = new SyncQueue();
   });
@@ -99,7 +101,7 @@ describe('SyncQueue', () => {
 
   test('オンライン時はfetchを直接呼び出す', async () => {
     syncQueue.isOnline = true;
-    global.fetch.mockResolvedValue({
+    global.window.fetch.mockResolvedValue({
       ok: true,
       status: 200,
       json: async () => ({ success: true })
@@ -107,7 +109,7 @@ describe('SyncQueue', () => {
     
     const response = await syncQueue.fetch('/api/test', { method: 'POST' });
     
-    expect(global.fetch).toHaveBeenCalledWith('/api/test', { method: 'POST' });
+    expect(global.window.fetch).toHaveBeenCalledWith('/api/test', { method: 'POST' });
     expect(response.ok).toBe(true);
   });
 

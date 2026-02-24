@@ -60,7 +60,8 @@ document.addEventListener('DOMContentLoaded', () => {
       })
       if (response.ok) {
         const data = await response.json()
-        currentPomodoroId = data.id || data.queued
+        // オンライン時は通常のIDを保存、オフライン時はnullにする
+        currentPomodoroId = data.queued ? null : data.id
       }
     } catch (error) {
       console.error('Failed to start pomodoro:', error)

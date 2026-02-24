@@ -153,7 +153,7 @@ class SyncQueue {
     // オンラインの場合は通常通り送信
     if (this.isOnline) {
       try {
-        const response = await fetch(url, options);
+        const response = await window.fetch(url, options);
         return response;
       } catch (error) {
         // ネットワークエラーの場合はキューに追加
@@ -177,7 +177,7 @@ class SyncQueue {
   
   // ユニークIDを生成
   generateId() {
-    return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    return `${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
   }
   
   // キューの状態を取得
