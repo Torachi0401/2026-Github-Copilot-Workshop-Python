@@ -25,6 +25,15 @@ document.addEventListener('DOMContentLoaded', () => {
   const TimerCtor = window.TimerLogic;
   let timer = new TimerCtor(FULL_SECONDS, { now: () => Date.now() });
   let tickInterval = null;
+  
+  // AudioContextを再利用
+  let audioContext = null;
+  function getAudioContext() {
+    if (!audioContext) {
+      audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    return audioContext;
+  }
 
   function formatTime(sec){
     const m = String(Math.floor(sec/60)).padStart(2,'0');
@@ -49,33 +58,32 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // サウンド再生（簡易実装）
+  // サウンド再生（Web Audio APIを使用）
   function playSound(type) {
     if (!settings.getSound(type)) return;
     
-    // Web Audio APIを使用した簡易音生成
-    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    const oscillator = audioContext.createOscillator();
-    const gainNode = audioContext.createGain();
+    const ctx = getAudioContext();
+    const oscillator = ctx.createOscillator();
+    const gainNode = ctx.createGain();
     
     oscillator.connect(gainNode);
-    gainNode.connect(audioContext.destination);
+    gainNode.connect(ctx.destination);
     
     if (type === 'start') {
       oscillator.frequency.value = 523.25; // C5
       gainNode.gain.value = 0.3;
       oscillator.start();
-      oscillator.stop(audioContext.currentTime + 0.1);
+      oscillator.stop(ctx.currentTime + 0.1);
     } else if (type === 'end') {
       oscillator.frequency.value = 659.25; // E5
       gainNode.gain.value = 0.3;
       oscillator.start();
-      oscillator.stop(audioContext.currentTime + 0.2);
+      oscillator.stop(ctx.currentTime + 0.2);
     } else if (type === 'tick') {
       oscillator.frequency.value = 440; // A4
       gainNode.gain.value = 0.05;
       oscillator.start();
-      oscillator.stop(audioContext.currentTime + 0.02);
+      oscillator.stop(ctx.currentTime + 0.02);
     }
   }
 
@@ -140,16 +148,18 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     btn.addEventListener('click', () => {
+      // タイマー実行中の場合は変更を防ぐ
+      if (timer.isRunning()) {
+        alert('タイマーを停止してから作業時間を変更してください。');
+        return;
+      }
+      
       const newDuration = parseInt(btn.dataset.workDuration);
       settings.set('workDuration', newDuration);
       FULL_SECONDS = newDuration * 60;
       
       // タイマーを再作成
-      const wasRunning = timer.isRunning();
       timer = new TimerCtor(FULL_SECONDS, { now: () => Date.now() });
-      if (wasRunning) {
-        timer.start();
-      }
       
       // ボタンのアクティブ状態更新
       workDurationButtons.forEach(b => b.classList.remove('active'));

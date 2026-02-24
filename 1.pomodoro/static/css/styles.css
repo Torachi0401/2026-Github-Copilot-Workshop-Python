@@ -28,10 +28,21 @@
 }
 
 *{box-sizing:border-box}
-html,body{height:100%;margin:0;font-family:Inter,system-ui,Segoe UI, Roboto, "Hiragino Kaku Gothic ProN", "Meiryo", sans-serif;background:linear-gradient(180deg,var(--bg) 0%, #6a5bd6 40%, #fff 100%);color:var(--text);transition:background 0.3s ease, color 0.3s ease;}
+html,body{
+  height:100%;
+  margin:0;
+  font-family:Inter,system-ui,Segoe UI, Roboto, "Hiragino Kaku Gothic ProN", "Meiryo", sans-serif;
+  background:linear-gradient(180deg,var(--bg) 0%, #6a5bd6 40%, #fff 100%);
+  color:var(--text);
+  transition:background 0.3s ease, color 0.3s ease;
+}
 
-[data-theme="dark"] html,[data-theme="dark"] body{background:linear-gradient(180deg,var(--bg) 0%, #0f3460 40%, #16213e 100%);}
-[data-theme="focus"] html,[data-theme="focus"] body{background:var(--bg);}
+[data-theme="dark"] html,[data-theme="dark"] body{
+  background:linear-gradient(180deg,var(--bg) 0%, #0f3460 40%, #16213e 100%);
+}
+[data-theme="focus"] html,[data-theme="focus"] body{
+  background:var(--bg);
+}
 
 .container{max-width:360px;margin:40px auto;padding:20px}
 .app-header{color:var(--text);font-weight:700;font-size:18px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;}

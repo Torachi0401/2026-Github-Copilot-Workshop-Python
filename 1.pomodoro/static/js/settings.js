@@ -21,10 +21,17 @@ class Settings {
     try {
       const stored = localStorage.getItem('pomodoroSettings');
       if (stored) {
-        this.settings = { ...this.defaults, ...JSON.parse(stored) };
+        const parsed = JSON.parse(stored);
+        // 基本的なバリデーション
+        if (typeof parsed !== 'object' || parsed === null) {
+          throw new Error('Invalid settings format');
+        }
+        this.settings = { ...this.defaults, ...parsed };
         // soundsオブジェクトをマージ
-        if (this.settings.sounds) {
+        if (this.settings.sounds && typeof this.settings.sounds === 'object') {
           this.settings.sounds = { ...this.defaults.sounds, ...this.settings.sounds };
+        } else {
+          this.settings.sounds = { ...this.defaults.sounds };
         }
       } else {
         this.settings = { ...this.defaults };
