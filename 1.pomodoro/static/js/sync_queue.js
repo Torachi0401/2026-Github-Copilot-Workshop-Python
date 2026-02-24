@@ -177,7 +177,8 @@ class SyncQueue {
   
   // ユニークIDを生成
   generateId() {
-    return `${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
+    const randomStr = Math.random().toString(36).substring(2);
+    return `${Date.now()}-${randomStr}`;
   }
   
   // キューの状態を取得
