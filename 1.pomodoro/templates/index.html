@@ -66,6 +66,17 @@
           </div>
         </div>
 
+        <div class="setting-group">
+          <label class="setting-label">データ管理</label>
+          <div class="data-management-buttons">
+            <button id="exportCsv" class="btn secondary">CSVエクスポート</button>
+            <label for="importCsv" class="btn secondary import-label">
+              CSVインポート
+              <input type="file" id="importCsv" accept=".csv" style="display: none;">
+            </label>
+          </div>
+        </div>
+
         <button id="closeSettings" class="btn primary close-settings-btn">閉じる</button>
       </section>
 
@@ -163,5 +174,6 @@
     <script src="/static/js/timer_logic.js"></script>
     <script src="/static/js/timer_ui.js"></script>
     <script src="/static/js/gamification.js"></script>
+    <script src="/static/js/csv_manager.js"></script>
   </body>
 </html>
