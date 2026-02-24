@@ -1,5 +1,6 @@
 import json
 from datetime import datetime, timezone
+from app.models import db, Pomodoro
 
 
 def test_start_and_complete(client):
@@ -21,20 +22,19 @@ def test_start_and_complete(client):
 
 
 def test_stats_date_filter(client):
-    # create a manual record in store with known end_time
-    store = client.application.config['POMODORO_STORE']
-    nid = client.application.config['POMODORO_NEXT_ID']
+    # create a manual record in database with known end_time
     now = datetime.now(timezone.utc)
-    rec = {
-        'id': nid,
-        'start_time': (now.replace(hour=0, minute=0, second=0)).isoformat(),
-        'end_time': now.isoformat(),
-        'duration_sec': 1500,
-        'status': 'completed',
-        'type': 'work',
-    }
-    store.append(rec)
-    client.application.config['POMODORO_NEXT_ID'] = nid + 1
+    
+    with client.application.app_context():
+        rec = Pomodoro(
+            start_time=(now.replace(hour=0, minute=0, second=0)).isoformat(),
+            end_time=now.isoformat(),
+            duration_sec=1500,
+            status='completed',
+            type='work',
+        )
+        db.session.add(rec)
+        db.session.commit()
 
     date_str = now.date().isoformat()
     resp = client.get(f'/api/stats?date={date_str}')

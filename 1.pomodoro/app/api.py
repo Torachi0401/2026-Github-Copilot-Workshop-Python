@@ -4,6 +4,7 @@ from .gamification import (
     calculate_level_and_xp, check_achievements, calculate_streak,
     get_weekly_stats, get_monthly_stats, XP_PER_POMODORO
 )
+from .models import db, Pomodoro
 
 bp = Blueprint('api', __name__)
 
@@ -16,19 +17,19 @@ def _now_iso():
 def start():
     payload = request.get_json() or {}
     ptype = payload.get('type', 'work')
-    store = current_app.config['POMODORO_STORE']
-    nid = current_app.config['POMODORO_NEXT_ID']
-    rec = {
-        'id': nid,
-        'start_time': _now_iso(),
-        'end_time': None,
-        'duration_sec': None,
-        'status': 'running',
-        'type': ptype,
-    }
-    store.append(rec)
-    current_app.config['POMODORO_NEXT_ID'] = nid + 1
-    return jsonify({'id': rec['id']}), 201
+    
+    # データベースに新しいPomodoroレコードを作成
+    rec = Pomodoro(
+        start_time=_now_iso(),
+        end_time=None,
+        duration_sec=None,
+        status='running',
+        type=ptype,
+    )
+    db.session.add(rec)
+    db.session.commit()
+    
+    return jsonify({'id': rec.id}), 201
 
 
 @bp.route('/complete', methods=['POST'])
@@ -37,21 +38,24 @@ def complete():
     pid = payload.get('id')
     if pid is None:
         return jsonify({'error': 'id required'}), 400
-    store = current_app.config['POMODORO_STORE']
-    rec = next((r for r in store if r['id'] == pid), None)
+    
+    # データベースからレコードを取得
+    rec = db.session.get(Pomodoro, pid)
     if rec is None:
         return jsonify({'error': 'not found'}), 404
-    if rec['status'] == 'completed':
+    if rec.status == 'completed':
         return jsonify({'ok': True}), 200
-    rec['end_time'] = _now_iso()
+    
+    rec.end_time = _now_iso()
     # compute duration if start_time available
     try:
-        st = datetime.fromisoformat(rec['start_time'])
-        et = datetime.fromisoformat(rec['end_time'])
-        rec['duration_sec'] = int((et - st).total_seconds())
+        st = datetime.fromisoformat(rec.start_time)
+        et = datetime.fromisoformat(rec.end_time)
+        rec.duration_sec = int((et - st).total_seconds())
     except Exception:
-        rec['duration_sec'] = payload.get('duration_sec')
-    rec['status'] = 'completed'
+        rec.duration_sec = payload.get('duration_sec')
+    rec.status = 'completed'
+    db.session.commit()
     
     # ゲーミフィケーション: XPを付与
     gamification_data = current_app.config['GAMIFICATION_DATA']
@@ -75,12 +79,12 @@ def complete():
 @bp.route('/stats', methods=['GET'])
 def stats():
     qdate = request.args.get('date')
-    store = current_app.config['POMODORO_STORE']
+    
     def in_date(rec, qdate_str):
-        if rec.get('end_time') is None:
+        if rec.end_time is None:
             return False
         try:
-            et = datetime.fromisoformat(rec['end_time'])
+            et = datetime.fromisoformat(rec.end_time)
         except Exception:
             return False
         if not qdate_str:
@@ -98,9 +102,11 @@ def stats():
     else:
         q_iso = None
 
-    completed = [r for r in store if r['status'] == 'completed' and (q_iso is None or in_date(r, q_iso.isoformat()))]
+    # データベースからすべての完了したレコードを取得
+    all_records = Pomodoro.query.filter_by(status='completed').all()
+    completed = [r for r in all_records if (q_iso is None or in_date(r, q_iso.isoformat()))]
     count = len(completed)
-    total_focus = sum((r.get('duration_sec') or 0) for r in completed)
+    total_focus = sum((r.duration_sec or 0) for r in completed)
     return jsonify({'completed_count': count, 'total_focus_seconds': total_focus}), 200
 
 
@@ -108,13 +114,13 @@ def stats():
 def gamification_stats():
     """ゲーミフィケーション統計（レベル、XP、ストリーク）を取得"""
     gamification_data = current_app.config['GAMIFICATION_DATA']
-    store = current_app.config['POMODORO_STORE']
     
     # レベルとXPを計算
     level_data = calculate_level_and_xp(gamification_data['total_xp'])
     
-    # ストリークを計算
-    completed = [r for r in store if r['status'] == 'completed']
+    # ストリークを計算（データベースから取得）
+    all_completed = Pomodoro.query.filter_by(status='completed').all()
+    completed = [r.to_dict() for r in all_completed]
     streak = calculate_streak(completed)
     
     return jsonify({
@@ -129,7 +135,8 @@ def gamification_stats():
 @bp.route('/gamification/achievements', methods=['GET'])
 def achievements():
     """獲得したバッジ一覧を取得"""
-    store = current_app.config['POMODORO_STORE']
+    all_completed = Pomodoro.query.filter_by(status='completed').all()
+    store = [r.to_dict() for r in all_completed]
     badges = check_achievements(store)
     
     return jsonify({
@@ -141,7 +148,8 @@ def achievements():
 @bp.route('/gamification/weekly-stats', methods=['GET'])
 def weekly_stats():
     """週間統計を取得"""
-    store = current_app.config['POMODORO_STORE']
+    all_completed = Pomodoro.query.filter_by(status='completed').all()
+    store = [r.to_dict() for r in all_completed]
     stats = get_weekly_stats(store)
     
     return jsonify(stats), 200
@@ -150,7 +158,8 @@ def weekly_stats():
 @bp.route('/gamification/monthly-stats', methods=['GET'])
 def monthly_stats():
     """月間統計を取得"""
-    store = current_app.config['POMODORO_STORE']
+    all_completed = Pomodoro.query.filter_by(status='completed').all()
+    store = [r.to_dict() for r in all_completed]
     stats = get_monthly_stats(store)
     
     return jsonify(stats), 200

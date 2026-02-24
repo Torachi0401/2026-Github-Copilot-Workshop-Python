@@ -1,6 +1,7 @@
 """ゲーミフィケーション機能のテスト"""
 import json
 from datetime import datetime, timezone, timedelta
+from app.models import db, Pomodoro
 
 
 def test_complete_gives_xp(client):
@@ -86,24 +87,21 @@ def test_achievements(client):
 
 def test_streak_calculation(client):
     """ストリーク計算のテスト"""
-    store = client.application.config['POMODORO_STORE']
-    nid = client.application.config['POMODORO_NEXT_ID']
-    
     # 3日連続のデータを作成
     now = datetime.now(timezone.utc)
-    for i in range(3):
-        date = now - timedelta(days=2-i)
-        rec = {
-            'id': nid + i,
-            'start_time': date.replace(hour=10, minute=0).isoformat(),
-            'end_time': date.replace(hour=10, minute=25).isoformat(),
-            'duration_sec': 1500,
-            'status': 'completed',
-            'type': 'work',
-        }
-        store.append(rec)
     
-    client.application.config['POMODORO_NEXT_ID'] = nid + 3
+    with client.application.app_context():
+        for i in range(3):
+            date = now - timedelta(days=2-i)
+            rec = Pomodoro(
+                start_time=date.replace(hour=10, minute=0).isoformat(),
+                end_time=date.replace(hour=10, minute=25).isoformat(),
+                duration_sec=1500,
+                status='completed',
+                type='work',
+            )
+            db.session.add(rec)
+        db.session.commit()
     
     # ストリークを確認
     resp = client.get('/api/gamification/stats')
@@ -119,24 +117,21 @@ def test_streak_calculation(client):
 
 def test_weekly_stats(client):
     """週間統計のテスト"""
-    store = client.application.config['POMODORO_STORE']
-    nid = client.application.config['POMODORO_NEXT_ID']
-    
     # 今週のデータを作成
     now = datetime.now(timezone.utc)
-    for i in range(5):
-        date = now - timedelta(days=i)
-        rec = {
-            'id': nid + i,
-            'start_time': date.replace(hour=10, minute=0).isoformat(),
-            'end_time': date.replace(hour=10, minute=25).isoformat(),
-            'duration_sec': 1500,
-            'status': 'completed',
-            'type': 'work',
-        }
-        store.append(rec)
     
-    client.application.config['POMODORO_NEXT_ID'] = nid + 5
+    with client.application.app_context():
+        for i in range(5):
+            date = now - timedelta(days=i)
+            rec = Pomodoro(
+                start_time=date.replace(hour=10, minute=0).isoformat(),
+                end_time=date.replace(hour=10, minute=25).isoformat(),
+                duration_sec=1500,
+                status='completed',
+                type='work',
+            )
+            db.session.add(rec)
+        db.session.commit()
     
     # 週間統計を確認
     resp = client.get('/api/gamification/weekly-stats')
@@ -149,26 +144,22 @@ def test_weekly_stats(client):
 
 def test_monthly_stats(client):
     """月間統計のテスト"""
-    store = client.application.config['POMODORO_STORE']
-    nid = client.application.config['POMODORO_NEXT_ID']
-    
     # 今月のデータを作成
     now = datetime.now(timezone.utc)
     month_start = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
     
-    for i in range(10):
-        date = month_start + timedelta(days=i)
-        rec = {
-            'id': nid + i,
-            'start_time': date.replace(hour=10, minute=0).isoformat(),
-            'end_time': date.replace(hour=10, minute=25).isoformat(),
-            'duration_sec': 1500,
-            'status': 'completed',
-            'type': 'work',
-        }
-        store.append(rec)
-    
-    client.application.config['POMODORO_NEXT_ID'] = nid + 10
+    with client.application.app_context():
+        for i in range(10):
+            date = month_start + timedelta(days=i)
+            rec = Pomodoro(
+                start_time=date.replace(hour=10, minute=0).isoformat(),
+                end_time=date.replace(hour=10, minute=25).isoformat(),
+                duration_sec=1500,
+                status='completed',
+                type='work',
+            )
+            db.session.add(rec)
+        db.session.commit()
     
     # 月間統計を確認
     resp = client.get('/api/gamification/monthly-stats')
@@ -182,24 +173,21 @@ def test_monthly_stats(client):
 
 def test_weekly_10_badge(client):
     """今週10回完了バッジのテスト"""
-    store = client.application.config['POMODORO_STORE']
-    nid = client.application.config['POMODORO_NEXT_ID']
-    
     # 今週10回のデータを作成
     now = datetime.now(timezone.utc)
-    for i in range(10):
-        date = now - timedelta(days=i % 7)
-        rec = {
-            'id': nid + i,
-            'start_time': date.replace(hour=10 + i % 8, minute=0).isoformat(),
-            'end_time': date.replace(hour=10 + i % 8, minute=25).isoformat(),
-            'duration_sec': 1500,
-            'status': 'completed',
-            'type': 'work',
-        }
-        store.append(rec)
     
-    client.application.config['POMODORO_NEXT_ID'] = nid + 10
+    with client.application.app_context():
+        for i in range(10):
+            date = now - timedelta(days=i % 7)
+            rec = Pomodoro(
+                start_time=date.replace(hour=10 + i % 8, minute=0).isoformat(),
+                end_time=date.replace(hour=10 + i % 8, minute=25).isoformat(),
+                duration_sec=1500,
+                status='completed',
+                type='work',
+            )
+            db.session.add(rec)
+        db.session.commit()
     
     # バッジ確認
     resp = client.get('/api/gamification/achievements')
