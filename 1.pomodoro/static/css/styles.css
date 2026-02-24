@@ -1,0 +1,31 @@
+:root{
+  --bg:#6f57d8;
+  --card:#faf8fb;
+  --muted:#9aa0b4;
+  --accent:#7f7df0;
+  --accent-dark:#5e4fe0;
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;font-family:Inter,system-ui,Segoe UI, Roboto, "Hiragino Kaku Gothic ProN", "Meiryo", sans-serif;background:linear-gradient(180deg,var(--bg) 0%, #6a5bd6 40%, #fff 100%);}
+.container{max-width:360px;margin:40px auto;padding:20px}
+.app-header{color:#111;font-weight:700;font-size:18px;margin-bottom:12px}
+.card{background:var(--card);border-radius:14px;padding:18px;box-shadow:0 6px 20px rgba(0,0,0,0.08)}
+.timer-card{display:flex;flex-direction:column;align-items:center;margin-bottom:18px}
+.status{color:var(--muted);margin-bottom:6px}
+.circle-wrap{position:relative;width:240px;height:240px;display:flex;align-items:center;justify-content:center}
+.progress-ring{transform:rotate(-90deg)}
+.ring-bg{fill:none;stroke:#eef0f3;stroke-width:16}
+.ring{fill:none;stroke:var(--accent);stroke-width:12;stroke-linecap:round;transition:stroke-dashoffset 0.3s linear}
+.time-label{position:absolute;font-size:36px;font-weight:700;color:#222}
+.controls{display:flex;gap:12px;margin-top:18px}
+.btn{padding:12px 18px;border-radius:999px;border:0;cursor:pointer;font-weight:600}
+.btn.primary{background:linear-gradient(135deg,var(--accent) 0%, var(--accent-dark) 100%);color:white}
+.btn.outline{background:white;border:2px solid var(--accent);color:var(--accent)}
+.stats-card{margin-top:8px}
+.stats-row{display:flex;justify-content:space-between;align-items:center}
+.stat{display:flex;flex-direction:column;align-items:flex-start}
+.stat.right{align-items:flex-end}
+.stat-num{color:var(--accent);font-weight:700;font-size:20px}
+.stat-label{color:var(--muted);font-size:12px}
+
+@media (max-width:420px){.container{margin:20px;padding:12px}.circle-wrap{width:200px;height:200px}.time-label{font-size:30px}}
