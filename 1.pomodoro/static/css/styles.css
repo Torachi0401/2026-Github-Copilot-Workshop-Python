@@ -9,7 +9,14 @@
   --progress-red:#e74c3c;
 }
 *{box-sizing:border-box}
-html,body{height:100%;margin:0;font-family:Inter,system-ui,Segoe UI, Roboto, "Hiragino Kaku Gothic ProN", "Meiryo", sans-serif;background:linear-gradient(180deg,var(--bg) 0%, #6a5bd6 40%, #fff 100%);position:relative;overflow-x:hidden;}
+html,body{
+  height:100%;
+  margin:0;
+  font-family:Inter,system-ui,Segoe UI, Roboto, "Hiragino Kaku Gothic ProN", "Meiryo", sans-serif;
+  background:linear-gradient(180deg,var(--bg) 0%, #6a5bd6 40%, #fff 100%);
+  position:relative;
+  overflow-x:hidden;
+}
 .container{max-width:360px;margin:40px auto;padding:20px}
 .app-header{color:#111;font-weight:700;font-size:18px;margin-bottom:12px}
 .card{background:var(--card);border-radius:14px;padding:18px;box-shadow:0 6px 20px rgba(0,0,0,0.08)}

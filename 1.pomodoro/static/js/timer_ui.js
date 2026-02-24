@@ -89,7 +89,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const remSec = Math.max(0, timer.remainingSecRounded())
     timeLabel.textContent = formatTime(remSec)
     const circumference = 2 * Math.PI * 52
-    const progress = remSec / FULL_SECONDS
+    const progress = Math.max(0, remSec / FULL_SECONDS)
     const offset = circumference * (1 - progress)
     ring.style.strokeDashoffset = offset
     
@@ -126,12 +126,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // Disable visual effects
     particleContainer.classList.remove('active')
     rippleContainer.style.display = 'none'
-    // Clear particles
-    particles.forEach(p => {
-      if (p.parentNode) {
-        p.parentNode.removeChild(p)
-      }
-    })
+    // Clear all particles more thoroughly
+    while (particleContainer.firstChild) {
+      particleContainer.removeChild(particleContainer.firstChild)
+    }
     particles = []
     updateUI()
   })
