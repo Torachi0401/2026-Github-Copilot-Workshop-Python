@@ -7,6 +7,9 @@
     <link rel="stylesheet" href="/static/css/styles.css" />
   </head>
   <body>
+    <!-- Particle effect container -->
+    <div class="particle-container" id="particleContainer"></div>
+    
     <main class="container">
       <header class="app-header">ポモドーロタイマー</header>
 
@@ -14,6 +17,13 @@
         <div class="status">作業中</div>
 
         <div class="circle-wrap">
+          <!-- Ripple effect container -->
+          <div class="ripple-container" id="rippleContainer">
+            <div class="ripple"></div>
+            <div class="ripple"></div>
+            <div class="ripple"></div>
+          </div>
+          
           <svg class="progress-ring" viewBox="0 0 120 120" width="240" height="240" aria-hidden="true">
             <circle class="ring-bg" cx="60" cy="60" r="52"></circle>
             <circle class="ring" cx="60" cy="60" r="52" stroke-dasharray="326.7" stroke-dashoffset="0"></circle>
